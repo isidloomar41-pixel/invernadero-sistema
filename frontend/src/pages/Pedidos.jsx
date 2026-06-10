@@ -177,6 +177,9 @@ async function cargarDatos() {
 
 async function crearPedido(e) {
   e.preventDefault();
+ console.log("ENTRO A CREAR PEDIDO");
+  console.log("CLIENTE:", clienteId);
+  console.log("CARRITO:", carrito);
 
   if (!clienteId) {
     alertaAdvertencia(
@@ -191,39 +194,48 @@ async function crearPedido(e) {
     );
     return;
   }
+console.log("ANTES DEL POST");
+try {
+  await api.post("/pedidos", {
+    cliente_id: clienteId,
+    medio_pago: medioPago,
+    tipo_pago: tipoPago,
+    pagado: Number(pagado) || 0,
+    productos: carrito.map((item) => ({
+      producto_id: item.producto_id,
+      cantidad: item.cantidad,
+    })),
+  });
 
-  try {
-    await api.post("/pedidos", {
-      cliente_id: clienteId,
-      medio_pago: medioPago,
-      tipo_pago: tipoPago,
-      pagado: Number(pagado) || 0,
-      productos: carrito.map((item) => ({
-        producto_id: item.producto_id,
-        cantidad: item.cantidad,
-      })),
-    });
+  console.log("POST EXITOSO");
 
-    // ACTUALIZAR TABLA INMEDIATAMENTE
-    await cargarDatos();
+  await cargarDatos();
 
-    // LIMPIAR FORMULARIO
-    setClienteId("");
-    setProductoId("");
-    setCantidad("");
-    setPagado("");
-    setCarrito([]);
-    setClienteSeleccionado(null);
+  setClienteId("");
+  setProductoId("");
+  setCantidad("");
+  setPagado("");
+  setCarrito([]);
+  setClienteSeleccionado(null);
 
-    await alertaExito(
-      "Pedido creado correctamente"
-    );
-  } catch (error) {
-    alertaError(
-      error.response?.data?.error ||
-      "Error al crear pedido"
-    );
-  }
+  await alertaExito(
+    "Pedido creado correctamente"
+  );
+
+} catch (error) {
+  console.log("ERROR COMPLETO:", error);
+
+  console.log(
+    "RESPUESTA:",
+    error.response?.data
+  );
+
+  alertaError(
+    error.response?.data?.error ||
+    error.response?.data?.mensaje ||
+    "Error al crear pedido"
+  );
+}
 }
   async function registrarAbono(
     pedidoId
@@ -656,10 +668,14 @@ const restante = Math.max(total - cantidadPagada, 0);
             </Grid>
           </Grid>
 
-          <Button
-  type="submit"
+       <Button
+  type="button"
   variant="contained"
   size="large"
+  onClick={() => {
+    console.log("BOTON FUNCIONA");
+    alert("BOTON FUNCIONA");
+  }}
   sx={{
     mt: 4,
     px: 5,
@@ -667,13 +683,6 @@ const restante = Math.max(total - cantidadPagada, 0);
     borderRadius: 3,
     fontWeight: "bold",
     fontSize: "1rem",
-    background:
-      "linear-gradient(45deg,#2e7d32,#4caf50)",
-    boxShadow: 4,
-    "&:hover": {
-      background:
-        "linear-gradient(45deg,#1b5e20,#43a047)",
-    },
   }}
 >
   CREAR PEDIDO
