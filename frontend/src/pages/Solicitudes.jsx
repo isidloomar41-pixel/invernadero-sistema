@@ -81,7 +81,9 @@ async function rechazarSolicitud(id) {
     );
   }
 }
-   async function autorizarSolicitud(id) {
+  async function autorizarSolicitud(id) {
+  console.log("ENTRO A LA FUNCION", id);
+
   const confirmar =
     await confirmarEliminacion(
       "¿Deseas aceptar esta solicitud?"
@@ -89,11 +91,17 @@ async function rechazarSolicitud(id) {
 
   if (!confirmar) return;
 
+  console.log("CONFIRMO");
+
   try {
-    await api.put(
+    console.log("ANTES DEL PUT");
+
+    const respuesta = await api.put(
       `/solicitudes/${id}/autorizar`,
       {}
     );
+
+    console.log("RESPUESTA:", respuesta);
 
     await alertaExito(
       "Solicitud aceptada correctamente"
@@ -101,7 +109,7 @@ async function rechazarSolicitud(id) {
 
     obtenerSolicitudes();
   } catch (error) {
-    console.log(error);
+    console.log("ERROR COMPLETO:", error);
 
     alertaError(
       error.response?.data?.error ||
