@@ -56,7 +56,7 @@ function Solicitudes({ setPagina }) {
     }
   }
 
-  async function rechazarSolicitud(id) {
+async function rechazarSolicitud(id) {
   const confirmar =
     await confirmarEliminacion(
       "¿Deseas rechazar esta solicitud?"
@@ -73,7 +73,15 @@ function Solicitudes({ setPagina }) {
       "Solicitud rechazada correctamente"
     );
 
-      async function autorizarSolicitud(id) {
+    obtenerSolicitudes();
+  } catch (error) {
+    alertaError(
+      error.response?.data?.error ||
+      "Error al rechazar solicitud"
+    );
+  }
+}
+   async function autorizarSolicitud(id) {
   const confirmar =
     await confirmarEliminacion(
       "¿Deseas aceptar esta solicitud?"
@@ -93,21 +101,15 @@ function Solicitudes({ setPagina }) {
 
     obtenerSolicitudes();
   } catch (error) {
+    console.log(error);
+
     alertaError(
       error.response?.data?.error ||
+      error.response?.data?.mensaje ||
       "Error al aceptar solicitud"
     );
   }
 }
-    obtenerSolicitudes();
-  } catch (error) {
-    alertaError(
-      error.response?.data?.error ||
-        "Error al rechazar solicitud"
-    );
-  }
-}
-
 
 function colorEstado(estado) {
     if (estado === "pendiente") return "warning";
@@ -126,7 +128,12 @@ function colorEstado(estado) {
       </Typography>
 
       <Grid container spacing={3}>
-        {solicitudes.map((solicitud) => (
+       {solicitudes
+  .filter(
+    (solicitud) =>
+      solicitud.estado === "pendiente"
+  )
+  .map((solicitud) => (
           <Grid item xs={12} md={6} key={solicitud.id}>
             <Card sx={{ borderRadius: 4 }}>
               <CardContent>
