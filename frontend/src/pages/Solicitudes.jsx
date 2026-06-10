@@ -73,6 +73,32 @@ function Solicitudes({ setPagina }) {
       "Solicitud rechazada correctamente"
     );
 
+      async function autorizarSolicitud(id) {
+  const confirmar =
+    await confirmarEliminacion(
+      "¿Deseas aceptar esta solicitud?"
+    );
+
+  if (!confirmar) return;
+
+  try {
+    await api.put(
+      `/solicitudes/${id}/autorizar`,
+      {}
+    );
+
+    await alertaExito(
+      "Solicitud aceptada correctamente"
+    );
+
+    obtenerSolicitudes();
+  } catch (error) {
+    alertaError(
+      error.response?.data?.error ||
+      "Error al aceptar solicitud"
+    );
+  }
+}
     obtenerSolicitudes();
   } catch (error) {
     alertaError(
@@ -128,24 +154,38 @@ function colorEstado(estado) {
                   )}
 
                   <Stack direction="row" spacing={2}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => verDetalle(solicitud)}
-                    >
-                      VER 
-                    </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => verDetalle(solicitud)}
+  >
+    VER
+  </Button>
 
-                    {solicitud.estado === "pendiente" && (
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => rechazarSolicitud(solicitud.id)}
-                      >
-                        RECHAZAR
-                      </Button>
-                    )}
-                  </Stack>
+  {solicitud.estado === "pendiente" && (
+    <>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={() =>
+          autorizarSolicitud(solicitud.id)
+        }
+      >
+        ACEPTAR
+      </Button>
+
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() =>
+          rechazarSolicitud(solicitud.id)
+        }
+      >
+        RECHAZAR
+      </Button>
+    </>
+  )}
+</Stack>
                 </Stack>
               </CardContent>
             </Card>
