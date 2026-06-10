@@ -303,21 +303,21 @@ router.post("/", verificarToken, async (req, res) => {
       pedido,
     });
 
-    if (cliente.correo) {
-      await transporter.sendMail({
-        from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
-        to: cliente.correo,
-        subject: `Nota de compra #${nota_id}`,
-        text: `Gracias por tu compra`,
-        attachments: [
-          {
-            filename: `nota-${nota_id}.pdf`,
-            content: pdfBuffer,
-            contentType: "application/pdf",
-          },
-        ],
-      });
-    }
+  //  if (cliente.correo) {
+     // await transporter.sendMail({
+       // from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
+       // to: cliente.correo,
+       // subject: `Nota de compra #${nota_id}`,
+       // text: `Gracias por tu compra`,
+        //attachments: [
+        //  {
+        //    filename: `nota-${nota_id}.pdf`,
+         //   content: pdfBuffer,
+         //   contentType: "application/pdf",
+         // },
+       // ],
+     // });
+   // }
 
     await client.query("COMMIT");
 
