@@ -149,6 +149,9 @@ async function cargarDatos() {
       nuevoItem,
     ]);
 
+    console.log("NUEVO ITEM", nuevoItem);
+    console.log("CARRITO ACTUAL", carrito);
+
     setProductoId("");
     setCantidad("");
   }
@@ -274,7 +277,7 @@ await cargarDatos();
       .includes(texto)
   );
 });
-
+  console.log("CARRITO", carrito);
  const total = carrito.reduce((suma, item) => {
   return suma + Number(item.subtotal || 0);
 }, 0);
