@@ -1,0 +1,224 @@
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #FFF8F0;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color: var(--text);
+  background: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+  background: #FFF8F0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TITULOS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading);
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  margin: 32px 0;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+p {
+  margin: 0;
+}
+
+/* CODIGO */
+
+code {
+  font-family: var(--mono);
+  font-size: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--code-bg);
+}
+
+/* ================================= */
+/* BOTONES GLOBALES FLORA NATIVA */
+/* ================================= */
+
+.MuiButton-root {
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  padding: 10px 20px !important;
+  transition: all .25s ease !important;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.15) !important;
+}
+
+.MuiButton-root:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.25) !important;
+}
+
+/* BOTONES AZULES */
+
+.MuiButton-containedPrimary,
+.btn-azul {
+  background: linear-gradient(
+    135deg,
+    #1976D2,
+    #42A5F5
+  ) !important;
+
+  color: white !important;
+}
+
+/* BOTONES VERDES */
+
+.btn-verde {
+  background: linear-gradient(
+    135deg,
+    #2E7D32,
+    #43A047
+  ) !important;
+
+  color: white !important;
+}
+
+/* BOTONES ROJOS */
+
+.btn-rojo {
+  background: linear-gradient(
+    135deg,
+    #C62828,
+    #EF5350
+  ) !important;
+
+  color: white !important;
+}
+
+/* BOTON PDF */
+
+.btn-pdf {
+  background: linear-gradient(
+    135deg,
+    #B71C1C,
+    #E53935
+  ) !important;
+
+  color: white !important;
+}
+
+/* BOTON WHATSAPP */
+
+.btn-whatsapp {
+  background: linear-gradient(
+    135deg,
+    #25D366,
+    #128C7E
+  ) !important;
+
+  color: white !important;
+}
+
+/* BOTON CORREO */
+
+.btn-correo {
+  background: linear-gradient(
+    135deg,
+    #1565C0,
+    #42A5F5
+  ) !important;
+
+  color: white !important;
+}
+
+/* INPUTS */
+
+.MuiOutlinedInput-root {
+  border-radius: 12px !important;
+}
+
+/* TABLAS */
+
+.MuiTableContainer-root {
+  border-radius: 16px !important;
+}
+
+.MuiTableHead-root {
+  background-color: #F5EFEA;
+}
+
+/* CARDS */
+
+.MuiPaper-root {
+  transition: .25s ease;
+}
+
+.MuiPaper-root:hover {
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.10);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .MuiButton-root {
+    width: 100%;
+  }
+}
