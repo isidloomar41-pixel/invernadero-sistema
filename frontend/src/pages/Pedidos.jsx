@@ -275,14 +275,13 @@ await cargarDatos();
   );
 });
 
-  const total = carrito.reduce(
-    (suma, item) =>
-      suma + Number(item.subtotal),
-    0
-  );
+ const total = carrito.reduce((suma, item) => {
+  return suma + Number(item.subtotal || 0);
+}, 0);
 
-  const restante =
-    total - (Number(pagado) || 0);
+const cantidadPagada = Number(pagado) || 0;
+
+const restante = Math.max(total - cantidadPagada, 0);
 
   return (
     <MainLayout setPagina={setPagina}>
@@ -455,6 +454,7 @@ await cargarDatos();
             {/* AGREGAR */}
             <Grid item xs={12} sm={4}>
   <Button
+  type="button"
     fullWidth
     variant="contained"
     onClick={agregarAlCarrito}
