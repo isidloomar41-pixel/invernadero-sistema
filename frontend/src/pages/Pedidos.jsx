@@ -177,7 +177,10 @@ async function cargarDatos() {
 
 async function crearPedido(e) {
   e.preventDefault();
- console.log("ENTRO A CREAR PEDIDO");
+
+  alert("ENTRO A CREAR PEDIDO");
+
+  console.log("ENTRO A CREAR PEDIDO");
   console.log("CLIENTE:", clienteId);
   console.log("CARRITO:", carrito);
 
@@ -669,13 +672,9 @@ const restante = Math.max(total - cantidadPagada, 0);
           </Grid>
 
        <Button
-  type="button"
+  type="submit"
   variant="contained"
   size="large"
-  onClick={() => {
-    console.log("BOTON FUNCIONA");
-    alert("BOTON FUNCIONA");
-  }}
   sx={{
     mt: 4,
     px: 5,
@@ -683,6 +682,13 @@ const restante = Math.max(total - cantidadPagada, 0);
     borderRadius: 3,
     fontWeight: "bold",
     fontSize: "1rem",
+    background:
+      "linear-gradient(45deg,#2e7d32,#4caf50)",
+    boxShadow: 4,
+    "&:hover": {
+      background:
+        "linear-gradient(45deg,#1b5e20,#43a047)",
+    },
   }}
 >
   CREAR PEDIDO
