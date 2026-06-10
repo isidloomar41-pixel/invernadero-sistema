@@ -75,6 +75,10 @@ async function cargarDatos() {
     setPedidos(resPedidos.data);
   } catch (error) {
     console.error(error);
+
+    alertaError(
+      "Error al actualizar datos"
+    );
   }
 }
   
@@ -168,66 +172,56 @@ async function cargarDatos() {
   );
 }
 
-  async function crearPedido(e) {
-    e.preventDefault();
+async function crearPedido(e) {
+  e.preventDefault();
 
-    if (!clienteId) {
-      alertaAdvertencia(
-  "Selecciona un cliente"
-);
-
-      return;
-    }
-
-    if (carrito.length === 0) {
-     alertaAdvertencia(
-  "Agrega productos al pedido"
-);
-
-      return;
-    }
-
-    try {
-      await api.post("/pedidos", {
-        cliente_id: clienteId,
-
-        medio_pago: medioPago,
-
-        tipo_pago: tipoPago,
-
-        pagado:
-          Number(pagado) || 0,
-
-        productos: carrito.map(
-          (item) => ({
-            producto_id:
-              item.producto_id,
-
-            cantidad:
-              item.cantidad,
-          })
-        ),
-      });
-
-      await alertaExito(
-  "Pedido creado correctamente"
-);
-      setClienteId("");
-      setProductoId("");
-      setCantidad("");
-      setPagado("");
-      setCarrito([]);
-      setClienteSeleccionado(null);
-
-      cargarDatos();
-    } catch (error) {
-      alertaError(
-  error.response?.data?.error ||
-    "Error al crear pedido"
-);
-    }
+  if (!clienteId) {
+    alertaAdvertencia(
+      "Selecciona un cliente"
+    );
+    return;
   }
 
+  if (carrito.length === 0) {
+    alertaAdvertencia(
+      "Agrega productos al pedido"
+    );
+    return;
+  }
+
+  try {
+    await api.post("/pedidos", {
+      cliente_id: clienteId,
+      medio_pago: medioPago,
+      tipo_pago: tipoPago,
+      pagado: Number(pagado) || 0,
+      productos: carrito.map((item) => ({
+        producto_id: item.producto_id,
+        cantidad: item.cantidad,
+      })),
+    });
+
+    // ACTUALIZAR TABLA INMEDIATAMENTE
+    await cargarDatos();
+
+    // LIMPIAR FORMULARIO
+    setClienteId("");
+    setProductoId("");
+    setCantidad("");
+    setPagado("");
+    setCarrito([]);
+    setClienteSeleccionado(null);
+
+    await alertaExito(
+      "Pedido creado correctamente"
+    );
+  } catch (error) {
+    alertaError(
+      error.response?.data?.error ||
+      "Error al crear pedido"
+    );
+  }
+}
   async function registrarAbono(
     pedidoId
   ) {
@@ -252,12 +246,12 @@ async function cargarDatos() {
 await alertaExito(
   "Abono registrado correctamente"
 );
-      setAbonos({
-        ...abonos,
-        [pedidoId]: "",
-      });
+    setAbonos({
+  ...abonos,
+  [pedidoId]: "",
+});
 
-      cargarDatos();
+await cargarDatos();
     } catch (error) {
       alertaError(
   error.response?.data?.error ||
