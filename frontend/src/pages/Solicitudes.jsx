@@ -191,7 +191,7 @@ function colorEstado(estado) {
                       color="primary"
                       onClick={() => verDetalle(solicitud)}
                     >
-                      VER PRODUCTOS
+                      VER 
                     </Button>
 
                     {solicitud.estado === "pendiente" && (
@@ -211,98 +211,50 @@ function colorEstado(estado) {
         ))}
       </Grid>
 
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        maxWidth="md"
-        fullWidth
+     <Dialog
+  open={open}
+  onClose={() => setOpen(false)}
+  maxWidth="sm"
+  fullWidth
+>
+  <DialogTitle>
+    Productos solicitados
+  </DialogTitle>
+
+  <DialogContent>
+    <Stack spacing={2}>
+      {solicitudSeleccionada && (
+        <Alert severity="info">
+          Cliente: {solicitudSeleccionada.cliente}
+        </Alert>
+      )}
+
+      {detalle.map((item) => (
+        <Card key={item.id}>
+          <CardContent>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+            >
+              {item.nombre}
+            </Typography>
+
+            <Typography>
+              Cantidad solicitada: {item.cantidad}
+            </Typography>
+          </CardContent>
+        </Card>
+      ))}
+
+      <Button
+        variant="contained"
+        onClick={() => setOpen(false)}
       >
-        <DialogTitle>Autorizar solicitud</DialogTitle>
-
-        <DialogContent>
-          <Stack spacing={2}>
-            {solicitudSeleccionada && (
-              <Alert severity="info">
-                Cliente: {solicitudSeleccionada.cliente}
-              </Alert>
-            )}
-
-            {detalle.map((item) => (
-              <Card key={item.id}>
-                <CardContent>
-                  <Typography variant="h6">{item.nombre}</Typography>
-                  <Typography>Cantidad solicitada: {item.cantidad}</Typography>
-                  <Typography>Precio actual: ${item.precio}</Typography>
-                  <Typography>Stock actual: {item.stock}</Typography>
-                  <Typography>
-                    Subtotal: $
-                    {(
-                      Number(item.precio) * Number(item.cantidad)
-                    ).toFixed(2)}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
-                <FormControl fullWidth>
-                  <InputLabel>Medio de pago</InputLabel>
-                  <Select
-                    value={medioPago}
-                    label="Medio de pago"
-                    onChange={(e) => setMedioPago(e.target.value)}
-                  >
-                    <MenuItem value="efectivo">Efectivo</MenuItem>
-                    <MenuItem value="transferencia">Transferencia</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <FormControl fullWidth>
-                  <InputLabel>Tipo de pago</InputLabel>
-                  <Select
-                    value={tipoPago}
-                    label="Tipo de pago"
-                    onChange={(e) => setTipoPago(e.target.value)}
-                  >
-                    <MenuItem value="completo">Completo</MenuItem>
-                    <MenuItem value="apartado">Apartado</MenuItem>
-                    <MenuItem value="fiado">Fiado</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Cantidad pagada"
-                  value={pagado}
-                  onChange={(e) => setPagado(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-
-            <Alert severity={restante > 0 ? "warning" : "success"}>
-              Total: ${total.toFixed(2)} | Pagado: $
-              {(Number(pagado) || 0).toFixed(2)} | Restante: $
-              {restante.toFixed(2)}
-            </Alert>
-
-            {solicitudSeleccionada?.estado === "pendiente" && (
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: "#1B5E20" }}
-                onClick={autorizarSolicitud}
-              >
-                AUTORIZAR Y GENERAR NOTA
-              </Button>
-            )}
-          </Stack>
-        </DialogContent>
-      </Dialog>
+        CERRAR
+      </Button>
+    </Stack>
+  </DialogContent>
+</Dialog>
     </MainLayout>
   );
 
