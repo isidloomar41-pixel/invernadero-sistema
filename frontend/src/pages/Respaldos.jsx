@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 
 import BackupIcon from "@mui/icons-material/Backup";
-import DownloadIcon from "@mui/icons-material/Download";
 
 import MainLayout from "../layouts/MainLayout";
 import api from "../services/api";
@@ -51,50 +50,6 @@ function Respaldos({ setPagina }) {
       obtenerRespaldos();
     } catch (error) {
       alertaError("Error al generar respaldo");
-    }
-  }
-
-  async function descargarPdf(nombreArchivo) {
-    try {
-      const respuesta = await api.get(
-        `/backups/evidencia/${nombreArchivo}`,
-        {
-          responseType: "blob",
-        }
-      );
-
-      const nombrePdf =
-        `evidencia_${nombreArchivo.replace(
-          ".json",
-          ".pdf"
-        )}`;
-
-      const url = window.URL.createObjectURL(
-        new Blob(
-          [respuesta.data],
-          { type: "application/pdf" }
-        )
-      );
-
-      const enlace =
-        document.createElement("a");
-
-      enlace.href = url;
-      enlace.download = nombrePdf;
-
-      document.body.appendChild(enlace);
-
-      enlace.click();
-
-      enlace.remove();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(error);
-
-      alertaError(
-        "Error al descargar evidencia PDF"
-      );
     }
   }
 
@@ -167,7 +122,7 @@ function Respaldos({ setPagina }) {
               </TableCell>
 
               <TableCell>
-                Acciones
+                Hash SHA256
               </TableCell>
             </TableRow>
           </TableHead>
@@ -190,40 +145,21 @@ function Respaldos({ setPagina }) {
                 </TableCell>
 
                 <TableCell>
-                  {
-                    respaldo.usuario_responsable
-                  }
+                  {respaldo.usuario_responsable}
                 </TableCell>
 
                 <TableCell>
                   {respaldo.estado}
                 </TableCell>
 
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    startIcon={
-                      <DownloadIcon />
-                    }
-                    onClick={() =>
-                      descargarPdf(
-                        respaldo.nombre_archivo
-                      )
-                    }
-                    sx={{
-                      background:
-                        "linear-gradient(45deg,#C62828,#E53935)",
-                      borderRadius: 2,
-                      fontWeight: "bold",
-
-                      "&:hover": {
-                        background:
-                          "linear-gradient(45deg,#B71C1C,#C62828)",
-                      },
-                    }}
-                  >
-                    Descargar PDF
-                  </Button>
+                <TableCell
+                  sx={{
+                    maxWidth: 250,
+                    wordBreak: "break-all",
+                    fontSize: "0.75rem",
+                  }}
+                >
+                  {respaldo.hash_sha256}
                 </TableCell>
               </TableRow>
             ))}
