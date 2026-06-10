@@ -297,29 +297,42 @@ router.post("/", verificarToken, async (req, res) => {
     };
 
     const pdfBuffer = await generarPDFNotaBuffer({
-      nota,
-      cliente,
-      productos: productosNota,
-      pedido,
+  nota,
+  cliente,
+  productos: productosNota,
+  pedido,
+});
+
+// GUARDAR TODO PRIMERO
+await client.query("COMMIT");
+
+// INTENTAR ENVIAR CORREO SIN AFECTAR EL PEDIDO
+try {
+  if (cliente.correo) {
+    await transporter.sendMail({
+      from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
+      to: cliente.correo,
+      subject: `Nota de compra #${nota_id}`,
+      text: `Gracias por tu compra. Se adjunta tu nota de compra en PDF.`,
+      attachments: [
+        {
+          filename: `nota-${nota_id}.pdf`,
+          content: pdfBuffer,
+          contentType: "application/pdf",
+        },
+      ],
     });
 
-  //  if (cliente.correo) {
-     // await transporter.sendMail({
-       // from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
-       // to: cliente.correo,
-       // subject: `Nota de compra #${nota_id}`,
-       // text: `Gracias por tu compra`,
-        //attachments: [
-        //  {
-        //    filename: `nota-${nota_id}.pdf`,
-         //   content: pdfBuffer,
-         //   contentType: "application/pdf",
-         // },
-       // ],
-     // });
-   // }
-
-    await client.query("COMMIT");
+    console.log(
+      `📧 Correo enviado correctamente a ${cliente.correo}`
+    );
+  }
+} catch (errorCorreo) {
+  console.error(
+    "❌ Error enviando correo:",
+    errorCorreo.message
+  );
+}
 
     res.json({
       mensaje: "Pedido creado correctamente",
