@@ -10,13 +10,8 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 
@@ -33,9 +28,7 @@ function Solicitudes({ setPagina }) {
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState(null);
   const [open, setOpen] = useState(false);
 
-  const [medioPago, setMedioPago] = useState("efectivo");
-  const [tipoPago, setTipoPago] = useState("completo");
-  const [pagado, setPagado] = useState("");
+ 
 
   async function obtenerSolicitudes() {
     try {
@@ -56,9 +49,7 @@ function Solicitudes({ setPagina }) {
 
       setDetalle(respuesta.data);
       setSolicitudSeleccionada(solicitud);
-      setMedioPago("efectivo");
-      setTipoPago("completo");
-      setPagado("");
+     
       setOpen(true);
     } catch (error) {
       console.error(error);
@@ -91,45 +82,6 @@ function Solicitudes({ setPagina }) {
   }
 }
 
-async function autorizarSolicitud() {
-  const confirmar =
-    await confirmarEliminacion(
-      "¿Deseas autorizar esta solicitud?"
-    );
-
-  if (!confirmar) return;
-
-  try {
-    if (!solicitudSeleccionada) return;
-
-    await api.put(
-      `/solicitudes/${solicitudSeleccionada.id}/autorizar`,
-      {
-        medio_pago: medioPago,
-        tipo_pago: tipoPago,
-        pagado:
-          Number(pagado) || 0,
-      }
-    );
-
-    await alertaExito(
-      "Solicitud autorizada. Se generó el pedido y la nota."
-    );
-
-    setOpen(false);
-    setDetalle([]);
-    setSolicitudSeleccionada(
-      null
-    );
-
-    obtenerSolicitudes();
-   } catch (error) {
-    alertaError(
-      error.response?.data?.error ||
-        "Error al autorizar solicitud"
-    );
-  }
-}
 
 function colorEstado(estado) {
     if (estado === "pendiente") return "warning";
@@ -139,13 +91,7 @@ function colorEstado(estado) {
     return "default";
   }
 
-  const total = detalle.reduce((suma, item) => {
-    const precioNormal = Number(item.precio) * Number(item.cantidad);
-    const descuento = Number(item.cantidad) >= 30 ? precioNormal * 0.1 : 0;
-    return suma + (precioNormal - descuento);
-  }, 0);
-
-  const restante = Math.max(total - (Number(pagado) || 0), 0);
+ 
 
   return (
     <MainLayout setPagina={setPagina}>
@@ -162,10 +108,6 @@ function colorEstado(estado) {
                   <Typography variant="h6" fontWeight="bold">
                     {solicitud.cliente}
                   </Typography>
-
-                  <Typography>Correo: {solicitud.correo}</Typography>
-                  <Typography>Teléfono: {solicitud.telefono}</Typography>
-                  <Typography>Dirección: {solicitud.direccion}</Typography>
                   <Typography>
                     Fecha: {new Date(solicitud.fecha).toLocaleString()}
                   </Typography>
