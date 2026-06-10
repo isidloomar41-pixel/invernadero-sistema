@@ -7,6 +7,7 @@ import { generarPDFNotaBuffer } from "../utils/notaPDF.js";
 const router = express.Router();
 
 router.get("/", verificarToken, async (req, res) => {
+  
   try {
     const resultado = await pool.query(`
       SELECT
@@ -26,7 +27,7 @@ router.get("/", verificarToken, async (req, res) => {
         ON pedidos.cliente_id = clientes.id
       ORDER BY pedidos.id DESC
     `);
-
+    
     res.json(resultado.rows);
   } catch (error) {
     res.status(500).json({
@@ -37,6 +38,12 @@ router.get("/", verificarToken, async (req, res) => {
 });
 
 router.post("/", verificarToken, async (req, res) => {
+
+  console.time("PEDIDO_COMPLETO");
+
+  console.log("ENTRO A POST PEDIDOS");
+console.log("USUARIO:", req.usuario);
+console.log("BODY:", req.body);
   const client = await pool.connect();
 
   try {
@@ -296,56 +303,66 @@ router.post("/", verificarToken, async (req, res) => {
       estado,
     };
 
-    const pdfBuffer = await generarPDFNotaBuffer({
+    console.time("PDF");
+
+const pdfBuffer = await generarPDFNotaBuffer({
   nota,
   cliente,
   productos: productosNota,
   pedido,
 });
 
-// GUARDAR TODO PRIMERO
+console.timeEnd("PDF");
+
 await client.query("COMMIT");
 
-// INTENTAR ENVIAR CORREO SIN AFECTAR EL PEDIDO
-try {
-  if (cliente.correo) {
-    await transporter.sendMail({
-      from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
-      to: cliente.correo,
-      subject: `Nota de compra #${nota_id}`,
-      text: `Gracias por tu compra. Se adjunta tu nota de compra en PDF.`,
-      attachments: [
-        {
-          filename: `nota-${nota_id}.pdf`,
-          content: pdfBuffer,
-          contentType: "application/pdf",
-        },
-      ],
-    });
+console.log("✅ Pedido guardado en BD");
 
-    console.log(
-      `📧 Correo enviado correctamente a ${cliente.correo}`
-    );
-  }
-} catch (errorCorreo) {
-  console.error(
-    "❌ Error enviando correo:",
-    errorCorreo.message
-  );
-}
+console.timeEnd("PEDIDO_COMPLETO");
 
-    res.json({
-      mensaje: "Pedido creado correctamente",
-      pedido_id,
-      nota_id,
-      total,
-      pagado: cantidadPagada,
-      restante,
-      estado,
-      comprasCliente,
-      esFrecuente,
-      esMayorista,
-    });
+// RESPONDER AL FRONTEND INMEDIATAMENTE
+res.json({
+  mensaje: "Pedido creado correctamente",
+  pedido_id,
+  nota_id,
+  total,
+  pagado: cantidadPagada,
+  restante,
+  estado,
+  comprasCliente,
+  esFrecuente,
+  esMayorista,
+});
+
+// ENVIAR CORREO EN SEGUNDO PLANO
+//if (cliente.correo) {
+  //transporter
+    //.sendMail({
+      //from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
+      //to: cliente.correo,
+      //subject: `Nota de compra #${nota_id}`,
+      //text: "Gracias por tu compra. Se adjunta tu nota de compra en PDF.",
+      //attachments: [
+        //{
+          //filename: `nota-${nota_id}.pdf`,
+          //content: pdfBuffer,
+          //contentType: "application/pdf",
+        //},
+      //],
+    //})
+    //.then(() => {
+      //console.log(
+        //`📧 Correo enviado correctamente a ${cliente.correo}`
+      //);
+    //})
+    //.catch((errorCorreo) => {
+      //console.error(
+        //"❌ Error enviando correo:",
+        //errorCorreo.message
+      //);
+    //});
+//}
+    
   } catch (error) {
     await client.query("ROLLBACK");
 
@@ -359,6 +376,9 @@ try {
 });
 
 router.put("/:id/abonar", verificarToken, async (req, res) => {
+  console.log("ENTRO A POST PEDIDOS");
+console.log("USUARIO:", req.usuario);
+console.log("BODY:", req.body);
   const client = await pool.connect();
 
   try {
