@@ -456,21 +456,21 @@ router.put(
           pedido,
         });
 
-      if (solicitud.correo) {
-        await transporter.sendMail({
-          from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
-          to: solicitud.correo,
-          subject: `Nota de compra #${nota_id}`,
-          text: `Tu solicitud fue autorizada`,
-          attachments: [
-            {
-              filename: `nota-${nota_id}.pdf`,
-              content: pdfBuffer,
-              contentType: "application/pdf",
-            },
-          ],
-        });
-      }
+    // if (solicitud.correo) {
+       // await transporter.sendMail({
+         // from: `"Flora Nativa" <${process.env.EMAIL_USER}>`,
+          //to: solicitud.correo,
+          //subject: `Nota de compra #${nota_id}`,
+          //text: `Tu solicitud fue autorizada`,
+          //attachments: [
+            //{
+              //filename: `nota-${nota_id}.pdf`,
+              //content: pdfBuffer,
+              //contentType: "application/pdf",
+            //},
+          //],
+        //});
+      //}
 
       await client.query("COMMIT");
 
